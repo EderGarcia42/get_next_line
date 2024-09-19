@@ -6,7 +6,7 @@
 /*   By: edegarci <edegarci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:48:08 by edegarci          #+#    #+#             */
-/*   Updated: 2024/09/19 12:08:24 by edegarci         ###   ########.fr       */
+/*   Updated: 2024/09/19 12:54:51 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	int		fd;
 	char	*line;
@@ -104,4 +104,4 @@ int	main(void)
 	}
 	close(fd);
 	return (0);
-}
+} */
