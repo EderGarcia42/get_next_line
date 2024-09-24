@@ -5,94 +5,71 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edegarci <edegarci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/17 11:48:10 by edegarci          #+#    #+#             */
-/*   Updated: 2024/09/19 12:38:20 by edegarci         ###   ########.fr       */
+/*   Created: 2024/09/20 12:17:41 by edegarci          #+#    #+#             */
+/*   Updated: 2024/09/24 12:53:07 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	len;
-
-	if (!s)
-		return (0);
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
-void	*ft_memcpy(void	*dest, void const *src, size_t n)
-{
-	void	*dest_ptr;
-
-	dest_ptr = dest;
-	if (!dest && !src)
-		return (dest);
-	while (n--)
-		*(char *)dest++ = *(char *)src++;
-	return (dest_ptr);
-}
-
-char	*ft_strdup(const char *s)
-{
-	char	*dup;
-	size_t	len;
-
-	if (!s)
-		return (NULL);
-	len = ft_strlen(s);
-	dup = malloc(len + 1);
-	if (!dup)
-		return (NULL);
-	ft_memcpy(dup, s, len + 1);
-	return (dup);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	len1;
-	size_t	len2;
-	char	*result;
-
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (ft_strdup(s1));
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	result = malloc(len1 + len2 + 1);
-	if (!result)
-		return (NULL);
-	ft_memcpy(result, s1, len1);
-	ft_memcpy(result + len1, s2, len2 + 1);
-	return (result);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+size_t	ft_strlen(const char *str)
 {
 	size_t	i;
-	size_t	j;
-	char	*subs;
+
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
+}
+
+char	*ft_strjoin(char *storage, const char *buffer)
+{
+	int		i;
+	int		j;
+	char	*str;
+
+	if (!storage)
+	{
+		storage = (char *)malloc(1 * sizeof(char));
+		storage[0] = '\0';
+	}
+	if (!storage || !buffer)
+		return (NULL);
+	str = malloc(sizeof(char) * (ft_strlen(storage) + ft_strlen(buffer) + 1));
+	if (str == NULL)
+		return (0);
+	i = -1;
+	j = 0;
+	if (storage)
+		while (storage[++i] != '\0')
+			str[i] = storage[i];
+	while (buffer[j] != '\0')
+		str[i++] = buffer[j++];
+	str[ft_strlen(storage) + ft_strlen(buffer)] = '\0';
+	free(storage);
+	return (str);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	int		i;
+	char	ch;
 
 	if (!s)
 		return (NULL);
+	ch = (char)c;
 	i = 0;
-	while (i < len && start < ft_strlen(s) && s[start + i])
-		i++;
-	j = 0;
-	subs = malloc((i + 1) * sizeof(char));
-	if (!subs)
-		return (NULL);
-	while (j < i && start < ft_strlen(s))
+	while (s[i] != '\0')
 	{
-		subs[j] = s[start + j];
-		j++;
+		if (s[i] == ch)
+		{
+			return ((char *)&s[i]);
+		}
+		i++;
 	}
-	subs[i] = '\0';
-	return (subs);
+	if (s[i] == ch)
+		return ((char *)&s[i]);
+	return (NULL);
 }

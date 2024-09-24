@@ -5,96 +5,116 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edegarci <edegarci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/17 11:48:08 by edegarci          #+#    #+#             */
-/*   Updated: 2024/09/19 12:54:51 by edegarci         ###   ########.fr       */
+/*   Created: 2024/09/20 12:17:16 by edegarci          #+#    #+#             */
+/*   Updated: 2024/09/24 12:57:27 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*read_and_store(int fd, char *buffer)
+char	*read_and_store(int fd, char *storage)
 {
-	char	temp[BUFFER_SIZE + 1];
-	int		bytes_read;
-	char	*temp_buffer;
+	char	buffer[BUFFER_SIZE + 1];
+	int		readbytes;
 
-	bytes_read = read(fd, temp, BUFFER_SIZE);
-	if (bytes_read < 0)
-		return (NULL);
-	if (bytes_read == 0)
+	readbytes = 1;
+	while (!ft_strchr(storage, '\n') && readbytes > 0)
 	{
-		if (buffer == NULL || buffer[0] == '\0')
+		readbytes = read(fd, buffer, BUFFER_SIZE);
+		if (readbytes == -1)
 		{
-			free(buffer);
+			free(storage);
 			return (NULL);
 		}
-		temp[0] = '\0';
+		if (readbytes == 0)
+			break ;
+		buffer[readbytes] = '\0';
+		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (NULL);
 	}
-	else
-		temp[bytes_read] = '\0';
-	temp_buffer = ft_strjoin(buffer, temp);
-	free(buffer);
-	return (temp_buffer);
+	return (storage);
 }
 
-char	*get_line(char *buffer)
+char	*leftover(char *storage)
 {
+	char	*leftover;
 	int		i;
-	char	*line;
+	int		j;
 
-	i = 0;
-	if (!buffer[i])
+	if (!storage)
 		return (NULL);
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	line = ft_substr(buffer, 0, i + (buffer[i] == '\n'));
-	return (line);
-}
-
-char	*save_rest(char *buffer)
-{
-	int		i;
-	char	*rest;
-
 	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
+	while (storage[i] != '\0' && storage[i] != '\n')
 		i++;
-	if (!buffer[i])
+	if (!storage[i])
 	{
-		free(buffer);
+		free(storage);
 		return (NULL);
 	}
-	rest = ft_strdup(buffer + i + 1);
-	free(buffer);
-	return (rest);
+	leftover = malloc(sizeof(char) * (ft_strlen(storage) - i + 1));
+	if (!leftover)
+		return (NULL);
+	i++;
+	j = 0;
+	while (storage[i])
+		leftover[j++] = storage[i++];
+	leftover[j] = '\0';
+	free(storage);
+	return (leftover);
+}
+
+char	*create_line(char *storage)
+{
+	char	*line;
+	int		i;
+
+	if (!storage || !storage[0])
+		return (NULL);
+	i = 0;
+	while (storage[i] && storage[i] != '\n')
+		i++;
+	line = malloc(sizeof(char) * (i + 2));
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (storage[i] && storage[i] != '\n')
+	{
+		line[i] = storage[i];
+		i++;
+	}
+	if (storage[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*storage = NULL;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	storage = read_and_store(fd, storage);
+	if (!storage || !*storage)
+	{
+		free(storage);
+		storage = NULL;
 		return (NULL);
-	buffer = read_and_store(fd, buffer);
-	if (!buffer)
-		return (NULL);
-	line = get_line(buffer);
-	if (!line)
-		return (NULL);
-	buffer = save_rest(buffer);
+	}
+	line = create_line(storage);
+	storage = leftover(storage);
 	return (line);
 }
 
-/* int	main(void)
+int	main(void)
 {
 	int		fd;
 	char	*line;
 
-	fd = open("test.txt", O_RDONLY);
-	if (fd < 0)
+	fd = open("text.txt", O_RDONLY);
+	if (fd == -1)
 	{
-		printf("Error opening the file.\n");
+		perror("open");
 		return (1);
 	}
 	while ((line = get_next_line(fd)) != NULL)
@@ -104,4 +124,4 @@ char	*get_next_line(int fd)
 	}
 	close(fd);
 	return (0);
-} */
+}

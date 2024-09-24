@@ -5,26 +5,29 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edegarci <edegarci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/17 11:48:04 by edegarci          #+#    #+#             */
-/*   Updated: 2024/09/17 13:05:58 by edegarci         ###   ########.fr       */
+/*   Created: 2024/09/20 12:18:32 by edegarci          #+#    #+#             */
+/*   Updated: 2024/09/24 12:55:48 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFFER_SIZE 42
 
-# include <fcntl.h> // Para open y O_RDONLY
-# include <stddef.h> // Para size_t y NULL
-# include <stdio.h> // Para printf
-# include <stdlib.h> // Para malloc y free
-# include <unistd.h> // Para read y close
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
+# include <fcntl.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+
+char	*ft_strchr(const char *s, int c);
+char	*ft_strjoin(char *s1, const char *s2);
 char	*get_next_line(int fd);
-size_t	ft_strlen(const char *s);
-char	*ft_strdup(const char *s1);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-void	*ft_memcpy(void *dest, const void *src, size_t n);
+char	*leftover(char *storage);
+size_t	ft_strlen(const char *str);
+char	*create_line(char *storage);
 
 #endif
