@@ -6,7 +6,7 @@
 /*   By: edegarci <edegarci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 12:17:41 by edegarci          #+#    #+#             */
-/*   Updated: 2024/09/24 12:53:07 by edegarci         ###   ########.fr       */
+/*   Updated: 2024/09/25 17:09:25 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,15 @@ char	*ft_strjoin(char *storage, const char *buffer)
 	if (!storage || !buffer)
 		return (NULL);
 	str = malloc(sizeof(char) * (ft_strlen(storage) + ft_strlen(buffer) + 1));
-	if (str == NULL)
-		return (0);
+	if (!str)
+		return (NULL);
 	i = -1;
 	j = 0;
-	if (storage)
-		while (storage[++i] != '\0')
-			str[i] = storage[i];
-	while (buffer[j] != '\0')
+	while (storage[++i])
+		str[i] = storage[i];
+	while (buffer[j])
 		str[i++] = buffer[j++];
-	str[ft_strlen(storage) + ft_strlen(buffer)] = '\0';
+	str[i] = '\0';
 	free(storage);
 	return (str);
 }
