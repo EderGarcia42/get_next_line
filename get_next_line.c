@@ -9,9 +9,12 @@
 /*   Updated: 2024/09/24 12:57:27 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "get_next_line.h"
-
+/*
+ * Reads from the file descriptor `fd` and stores the contents in `storage`.
+ * It reads until a newline character is found or EOF is reached.
+ * Returns the updated `storage` with the new contents.
+ */
 char	*read_and_store(int fd, char *storage)
 {
 	char	buffer[BUFFER_SIZE + 1];
@@ -36,6 +39,11 @@ char	*read_and_store(int fd, char *storage)
 	return (storage);
 }
 
+/*
+ * Extracts the leftover string after the first newline character from `storage`.
+ * If there is no newline, it frees `storage` and returns NULL.
+ * Returns the remaining string after the newline.
+ */
 char	*leftover(char *storage)
 {
 	char	*leftover;
@@ -64,6 +72,11 @@ char	*leftover(char *storage)
 	return (leftover);
 }
 
+/*
+ * Creates a line from `storage` up to the first newline character.
+ * Allocates memory for the line and returns it.
+ * If `storage` is empty, returns NULL.
+ */
 char	*create_line(char *storage)
 {
 	char	*line;
@@ -89,6 +102,11 @@ char	*create_line(char *storage)
 	return (line);
 }
 
+/*
+ * Main function to get the next line from the file descriptor `fd`.
+ * Uses a static variable `storage` to keep track of leftover data between calls.
+ * Returns the next line or NULL if no more lines are available.
+ */
 char	*get_next_line(int fd)
 {
 	static char	*storage = NULL;
@@ -106,7 +124,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	int		fd;
 	char	*line;
@@ -124,4 +142,4 @@ int	main(void)
 	}
 	close(fd);
 	return (0);
-}
+} */
