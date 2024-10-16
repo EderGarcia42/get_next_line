@@ -5,53 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edegarci <edegarci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/20 12:17:16 by edegarci          #+#    #+#             */
-/*   Updated: 2024/09/25 17:29:19 by edegarci         ###   ########.fr       */
+/*   Created: 2024/09/20 12:18:07 by edegarci          #+#    #+#             */
+/*   Updated: 2024/10/16 13:51:44 by edegarci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/* 
- * read_and_store: Reads from the file descriptor and appends the content 
- * to the existing 'storage' until a newline character is found or End of File 
- * is reached.
- * It returns the updated 'storage' containing the newly read content.
- */
 char	*read_and_store(int fd, char *storage)
 {
-	char	buffer[BUFFER_SIZE + 1];
+	char	*buffer;
 	int		readbytes;
-	char	*tmp;
 
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
 	readbytes = 1;
-	while (!ft_strchr(storage, '\n') && readbytes != 0)
+	while (!ft_strchr(storage, '\n') && readbytes > 0)
 	{
 		readbytes = read(fd, buffer, BUFFER_SIZE);
 		if (readbytes < 0)
-		{
-			free(storage);
-			return (NULL);
-		}
-		if (readbytes == 0)
-			break ;
+			return (free(buffer), free(storage), NULL);
+		if (readbytes == 0 && (!storage || !storage[0]))
+			return (free(buffer), free(storage), NULL);
 		buffer[readbytes] = '\0';
-		tmp = ft_strjoin(storage, buffer);
-		if (!tmp)
-		{
-			free(storage);
-			return (NULL);
-		}
-		storage = tmp;
+		storage = ft_strjoin(storage, buffer);
+		if (!storage)
+			return (free(buffer), NULL);
 	}
+	free(buffer);
 	return (storage);
 }
 
-/* 
- * leftover: Extracts the remaining content in 'storage' after the newline 
- * character.
- * It returns the remaining content after freeing the previous 'storage'.
- */
 char	*leftover(char *storage)
 {
 	char	*leftover;
@@ -80,10 +65,6 @@ char	*leftover(char *storage)
 	return (leftover);
 }
 
-/* 
- * create_line: Extracts the line from 'storage' up to the newline character
- * (or the end of the string if no newline is found). It returns the line.
- */
 char	*create_line(char *storage)
 {
 	char	*line;
@@ -109,12 +90,6 @@ char	*create_line(char *storage)
 	return (line);
 }
 
-/* 
- * get_next_line: Main function that returns the next line from the file 
- * descriptor.
- * It reads data using 'read_and_store', extracts the line with 'create_line',
- * and prepares the leftover content using 'leftover'. 
- */
 char	*get_next_line(int fd)
 {
 	static char	*storage = NULL;
@@ -132,7 +107,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/* MAIN NORMAL */
+/*	MAIN NORMAL */
 /* int	main(void)
 {
 	int		fd;
@@ -152,9 +127,8 @@ char	*get_next_line(int fd)
 	close(fd);
 	return (0);
 } */
-
-/* MAIN CON TIEMPO Y ARGV*/
-/* #include <sys/time.h>
+/*	MAIN CON TIEMPO Y ARGV*/
+/*	#include <sys/time.h>
 
  int	main(int ac, char **av) {
 		(void)ac;
@@ -175,16 +149,3 @@ gettimeofday(&end, NULL);
 	(end.tv_usec - start.tv_usec) / 1000);
 
 		return (0);} */
-
-/* TEST */
-/* 		#include <stdio.h>
-#include <fcntl.h>
-
-int main()
-{
-    FILE *fp = fopen("test.txt", "w");
-    for(int i=0; i<10000; i++)
-    {
-        fprintf(fp, "a");
-    }
-} */
